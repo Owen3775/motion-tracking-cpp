@@ -6,6 +6,7 @@ namespace mt::config {
 
 inline constexpr int kRoiSize = 350;
 inline constexpr int kWarmupFrames = 30;
+inline constexpr int kLockFrames = 15;
 inline constexpr double kMinContourArea = 400.0;
 
 inline constexpr int kMogHistory = 500;

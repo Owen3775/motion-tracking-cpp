@@ -20,6 +20,7 @@ int main() {
   cv::Rect target;
   State state = State::Search;
   int frameCount = 0;
+  int lockProgress = 0;
 
   cv::Mat frame;
   while (capture.read(frame)) {
@@ -28,11 +29,14 @@ int main() {
     const cv::Mat mask = motion::motionMask(*subtractor, frame(roi));
 
     if (state == State::Search && frameCount++ >= config::kWarmupFrames) {
-      if (const auto box = motion::findCentralMotionBox(mask)) {
+      const auto box = motion::findCentralMotionBox(mask);
+      lockProgress = box ? lockProgress + 1 : 0;
+      if (box && lockProgress >= config::kLockFrames) {
         target = *box + roi.tl();
         tracker = tracking::createTracker();
         tracker->init(frame, target);
         state = State::Track;
+        lockProgress = 0;
       }
     } else if (state == State::Track && !tracker->update(frame, target)) {
       state = State::Search;
