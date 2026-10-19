@@ -27,7 +27,7 @@ cv::Mat gradientMagnitude(const cv::Mat& bgrImage) {
 
 void show(const cv::Mat& roiFrame, const cv::Mat& mask) {
   cv::imshow(config::kMaskWindowName, mask);
-  cv::imshow(config::kEdgeWindowName, gradientMagnitude(roiFrame));
+  cv::imshow(config::kEdgeWindowName, gradientMagnitude(roiFrame));/*we dont use gradient in this code ourselves, internal frameworks of TrackerCSRT uses it though, this is for fun and show*/
 }
 
 void close() {

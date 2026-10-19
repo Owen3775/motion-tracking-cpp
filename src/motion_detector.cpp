@@ -20,8 +20,8 @@ cv::Mat motionMask(cv::BackgroundSubtractor& subtractor, const cv::Mat& roiFrame
   cv::Mat blurred;
   cv::Mat mask;
   const cv::Size kernel(config::kBlurKernelSize, config::kBlurKernelSize);
-  cv::GaussianBlur(roiFrame, blurred, kernel, 0);
-  subtractor.apply(blurred, mask);
+  cv::GaussianBlur(roiFrame, blurred, kernel, 0);/*Blur averages each pixel with its neighbors. This hides tiny random noise from the camera sensor.*/
+  subtractor.apply(blurred, mask);// each time done, it will learn what background anf foreground are
   cv::threshold(mask, mask, config::kMaskThreshold, 255, cv::THRESH_BINARY);
   cv::dilate(mask, mask, cv::Mat(), {-1, -1}, config::kDilateIterations);
   return mask;

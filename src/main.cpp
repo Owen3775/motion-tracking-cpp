@@ -28,8 +28,8 @@ int main() {
   while (capture.read(frame)) {
     cv::flip(frame, frame, 1);
     const cv::Rect roi = rect_utils::centerRoi(frame.size());
-    const cv::Mat mask = motion::motionMask(*subtractor, frame(roi));
-    const auto contours = motion::findMotionContours(mask);
+    const cv::Mat mask = motion::motionMask(*subtractor, frame(roi));/* white = differs from learned background (moving), black = matches background */
+    const auto contours = motion::findMotionContours(mask);/*The red outline of a white blob in the mask. Bounding rectangle: The smallest upright box that contains that outline.*/
 
     if (state == State::Search && frameCount++ >= config::kWarmupFrames) {
       const auto box = motion::findCentralMotionBox(contours, mask.size());
@@ -46,7 +46,7 @@ int main() {
     }
 
     if (showDebug) debug_view::show(frame(roi), mask);
-    overlay::drawContours(frame, contours, roi);
+    overlay::drawContours(frame, contours, roi);/*show what pixels changed, masks, which is where the boxes are based off of*/
     overlay::draw(frame, roi, state, target);
     cv::imshow(config::kWindowName, frame);
 

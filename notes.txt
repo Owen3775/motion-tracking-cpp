@@ -1,0 +1,19 @@
+Key concepts first
+
+Frame / image / cv::Mat: A video is a stream of still pictures called frames. A picture is a grid of pixels. A color pixel is three numbers (blue, green, red), each 0-255. OpenCV stores a picture in a cv::Mat, which is basically a table of those numbers.
+
+Mask: A black-and-white picture, the same size as another picture, that marks which pixels you care about. White (255) means “yes, this pixel matters” and black (0) means “ignore it.” Here, white means “this pixel changed, so something is moving.” You can think of it as a stencil.
+
+Background subtraction (MOG2): The program watches each pixel over time and learns what it normally looks like. A pixel that suddenly looks different is “foreground” and gets painted white in the mask. MOG2 is the algorithm that learns this, and it adapts slowly, so things that stay still become background.
+
+Blur, threshold, dilate:
+
+Blur averages each pixel with its neighbors. This hides tiny random noise from the camera sensor.
+Threshold turns “mostly white” shades into pure white and everything else into black.
+Dilate grows white areas outward by a pixel or two, so a broken-up moving object becomes one solid shape.
+
+Contour: The outline of a white blob in the mask. Bounding rectangle: The smallest upright box that contains that outline.
+
+Gradient: How fast brightness changes from one pixel to the next. A flat wall has near-zero gradient. The edge of an object, where dark meets light, has a strong gradient. Gradients are how computers “see” edges and shapes. Our code doesn’t compute them directly, but TrackerCSRT does inside OpenCV. It summarizes the gradient directions around the object, a method called HOG (Histogram of Oriented Gradients), and uses that “edge fingerprint” to find the same object in the next frame. That’s why it follows an object by its shape and texture instead of by motion.
+
+ROI (region of interest): The part of the picture you look at. Here it’s the 350x350 center box.
