@@ -7,4 +7,4 @@ ISSUE:
 
 
 SOLUTION:
-...
+- 3 frame masking. 3 pictures, initial, middle, end, mask initial to middle and end to middle and then AND the 2 masks to get one big blob/contour of the 2 masks, and draw from the corners a rectangle, a bounding box. THIS CAN FAIL IF THE OBJ IS MOVING TO FAST AND MASK IS TO LARGE(mask to large, over 50% of captured image will be thrown away bc of error)(error is if camera moved and entire or part of screen becomes a white mask because all the scene changed).
