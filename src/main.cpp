@@ -5,6 +5,7 @@
 
 #include "camera.h"
 #include "config.h"
+#include "debug_view.h"
 #include "motion_detector.h"
 #include "object_tracker.h"
 #include "overlay.h"
@@ -21,15 +22,17 @@ int main() {
   State state = State::Search;
   int frameCount = 0;
   int lockProgress = 0;
+  bool showDebug = true;
 
   cv::Mat frame;
   while (capture.read(frame)) {
     cv::flip(frame, frame, 1);
     const cv::Rect roi = rect_utils::centerRoi(frame.size());
     const cv::Mat mask = motion::motionMask(*subtractor, frame(roi));
+    const auto contours = motion::findMotionContours(mask);
 
     if (state == State::Search && frameCount++ >= config::kWarmupFrames) {
-      const auto box = motion::findCentralMotionBox(mask);
+      const auto box = motion::findCentralMotionBox(contours, mask.size());
       lockProgress = box ? lockProgress + 1 : 0;
       if (box && lockProgress >= config::kLockFrames) {
         target = *box + roi.tl();
@@ -42,12 +45,18 @@ int main() {
       state = State::Search;
     }
 
+    if (showDebug) debug_view::show(frame(roi), mask);
+    overlay::drawContours(frame, contours, roi);
     overlay::draw(frame, roi, state, target);
     cv::imshow(config::kWindowName, frame);
 
     const int key = cv::waitKey(1);
     if (key == config::kQuitKey || key == config::kEscKey) break;
     if (key == config::kResetKey) state = State::Search;
+    if (key == config::kDebugKey) {
+      showDebug = !showDebug;
+      if (!showDebug) debug_view::close();
+    }
   }
   return EXIT_SUCCESS;
 }

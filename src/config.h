@@ -17,12 +17,16 @@ inline constexpr int kDilateIterations = 2;
 
 inline constexpr int kCameraIndex = 0;
 inline constexpr char kWindowName[] = "Motion Tracker";
+inline constexpr char kMaskWindowName[] = "Motion Mask";
+inline constexpr char kEdgeWindowName[] = "Gradient Edges";
 
 inline constexpr int kQuitKey = 'q';
 inline constexpr int kResetKey = 'r';
+inline constexpr int kDebugKey = 'd';
 inline constexpr int kEscKey = 27;
 
 inline const cv::Scalar kRoiColor(255, 200, 0);
 inline const cv::Scalar kTargetColor(0, 255, 0);
+inline const cv::Scalar kContourColor(0, 0, 255);
 
 }

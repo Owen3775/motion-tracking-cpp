@@ -10,6 +10,7 @@ find_package(OpenCV REQUIRED)
 add_executable(motion_tracker
   src/main.cpp
   src/camera.cpp
+  src/debug_view.cpp
   src/motion_detector.cpp
   src/object_tracker.cpp
   src/overlay.cpp
